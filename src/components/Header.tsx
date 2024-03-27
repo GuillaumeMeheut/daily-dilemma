@@ -1,9 +1,10 @@
 "use client";
-import { signInWithGoogle } from "@/lib/auth";
+import { onAuthStateChanged, signInWithGoogle, signOut } from "@/lib/auth";
+import { User } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
-function useUserSession(initialUser) {
+function useUserSession(initialUser: User | null | undefined) {
   // The initialUser comes from the server via a server component
   const [user, setUser] = useState(initialUser);
   const router = useRouter();
@@ -14,7 +15,6 @@ function useUserSession(initialUser) {
     });
 
     return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -23,25 +23,26 @@ function useUserSession(initialUser) {
 
       // refresh when user changed to ease testing
       if (user?.email !== authUser?.email) {
-        router.refresh();
+        router.reload();
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return user;
 }
 
-export default function Header({ initialUser }) {
+type HeaderProps = {
+  initialUser: User | null | undefined;
+};
+
+export default function Header({ initialUser }: HeaderProps) {
   const user = useUserSession(initialUser);
 
-  const handleSignOut = (event) => {
-    event.preventDefault();
+  const handleSignOut = () => {
     signOut();
   };
 
-  const handleSignIn = (event) => {
-    event.preventDefault();
+  const handleSignIn = () => {
     signInWithGoogle();
   };
 
