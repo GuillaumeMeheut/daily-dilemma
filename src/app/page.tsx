@@ -1,8 +1,7 @@
+"use client";
 import { addComment, getComments } from "@/lib/firestore";
 import { useEffect } from "react";
 import { signInWithGoogle } from "@/lib/auth";
-
-export const dynamic = "force-dynamic";
 
 export default function Home() {
   //   useEffect(() => {
@@ -20,7 +19,6 @@ export default function Home() {
   return (
     <main>
       <button onClick={postComment}>Post comment</button>
-      <button onClick={signInWithGoogle}>Connect with google</button>
     </main>
   );
 }

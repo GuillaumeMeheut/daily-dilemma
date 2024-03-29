@@ -1,11 +1,10 @@
 "use client";
 import { onAuthStateChanged, signInWithGoogle, signOut } from "@/lib/auth";
 import { User } from "firebase/auth";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 function useUserSession(initialUser: User | null | undefined) {
-  // The initialUser comes from the server via a server component
   const [user, setUser] = useState(initialUser);
   const router = useRouter();
 
@@ -21,10 +20,7 @@ function useUserSession(initialUser: User | null | undefined) {
     onAuthStateChanged((authUser) => {
       if (user === undefined) return;
 
-      // refresh when user changed to ease testing
-      if (user?.email !== authUser?.email) {
-        router.reload();
-      }
+      if (user?.email !== authUser?.email) router.refresh();
     });
   }, [user]);
 
@@ -37,6 +33,7 @@ type HeaderProps = {
 
 export default function Header({ initialUser }: HeaderProps) {
   const user = useUserSession(initialUser);
+  console.log(user);
 
   const handleSignOut = () => {
     signOut();
@@ -46,5 +43,13 @@ export default function Header({ initialUser }: HeaderProps) {
     signInWithGoogle();
   };
 
-  return <header>header</header>;
+  return (
+    <header>
+      {user ? (
+        <button onClick={handleSignOut}>Sign out</button>
+      ) : (
+        <button onClick={handleSignIn}>Sign in</button>
+      )}
+    </header>
+  );
 }

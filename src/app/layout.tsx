@@ -18,8 +18,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <Header initialUser={currentUser} />
-      <body>{children}</body>
+      <head>{/* Add any necessary head content */}</head>
+      <body>
+        <Header initialUser={currentUser} />
+        {children}
+      </body>
     </html>
   );
 }
