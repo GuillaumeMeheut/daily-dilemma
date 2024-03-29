@@ -1,7 +1,8 @@
 "use client";
-import { addComment, getComments } from "@/lib/firestore";
+import { Lang, addComment, getComments } from "@/lib/firestore";
 import { useEffect } from "react";
 import { signInWithGoogle } from "@/lib/auth";
+import { Timestamp } from "firebase/firestore";
 
 export default function Home() {
   //   useEffect(() => {
@@ -13,7 +14,12 @@ export default function Home() {
   //   }, []);
 
   const postComment = () => {
-    addComment({ userId: "fhsdjf", text: "SMALL COMMENT" });
+    addComment({
+      userId: "Guillaume",
+      text: "Texte en francais",
+      lang: Lang.EN,
+      timestamp: Timestamp.fromDate(new Date()),
+    });
   };
 
   return (

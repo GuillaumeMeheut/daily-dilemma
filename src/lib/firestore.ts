@@ -1,9 +1,16 @@
-import { addDoc, getDocs, query } from "firebase/firestore";
+import { addDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "./firebase";
+import { Timestamp } from "firebase-admin/firestore";
+
+export enum Lang {
+  FR = "FR",
+  EN = "EN",
+}
 
 export async function getComments() {
-  let q = query(collection(db, "comments"));
+  const lang: Lang = Lang.FR;
+  let q = query(collection(db, "comments"), where("lang", "==", lang));
 
   const results = await getDocs(q);
 
@@ -18,6 +25,8 @@ export async function getComments() {
 type AddCommentData = {
   userId: string;
   text: string;
+  lang: Lang;
+  timestamp: Timestamp;
 };
 
 export async function addComment(data: AddCommentData) {
