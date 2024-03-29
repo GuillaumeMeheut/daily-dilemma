@@ -84,7 +84,7 @@ export async function getAuthenticatedAppForUser(
   // client
   console.log("client: ", firebaseApp);
 
-  return { app: firebaseApp, user: auth.currentUser.toJSON() };
+  return { app: firebaseApp, user: auth.currentUser?.toJSON() };
 }
 
 async function getAppRouterSession() {
