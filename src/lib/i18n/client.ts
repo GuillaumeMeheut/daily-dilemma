@@ -12,11 +12,10 @@ import {
 import { useCookies } from "react-cookie";
 import resourcesToBackend from "i18next-resources-to-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
-import { getOptions, languages, cookieName, Lang } from "./settings";
+import { getOptions, languages, cookieName } from "./settings";
 
 const runsOnServerSide = typeof window === "undefined";
 
-// on client side the normal singleton is ok
 i18next
   .use(initReactI18next)
   .use(LanguageDetector)
@@ -39,7 +38,7 @@ export function useTranslation<
   Ns extends FlatNamespace,
   KPrefix extends KeyPrefix<FallbackNs<Ns>> = undefined
 >(
-  lang: Lang,
+  lang: string,
   ns?: Ns,
   options?: UseTranslationOptions<KPrefix>
 ): UseTranslationResponse<FallbackNs<Ns>, KPrefix> {
@@ -49,18 +48,23 @@ export function useTranslation<
   if (runsOnServerSide && lang && i18n.resolvedLanguage !== lang) {
     i18n.changeLanguage(lang);
   } else {
-    const [activelang, setActivelang] = useState(i18n.resolvedLanguage);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [activeLng, setActiveLng] = useState(i18n.resolvedLanguage);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-      if (activelang === i18n.resolvedLanguage) return;
-      setActivelang(i18n.resolvedLanguage);
-    }, [activelang, i18n.resolvedLanguage]);
+      if (activeLng === i18n.resolvedLanguage) return;
+      setActiveLng(i18n.resolvedLanguage);
+    }, [activeLng, i18n.resolvedLanguage]);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       if (!lang || i18n.resolvedLanguage === lang) return;
       i18n.changeLanguage(lang);
     }, [lang, i18n]);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       if (cookies.i18next === lang) return;
       setCookie(cookieName, lang, { path: "/" });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lang, cookies.i18next]);
   }
   return ret;
