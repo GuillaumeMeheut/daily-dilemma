@@ -5,7 +5,7 @@ import {
   NextOrObserver,
   User,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from ".";
 
 export function onAuthStateChanged(cb: NextOrObserver<User>) {
   return _onAuthStateChanged(auth, cb);
