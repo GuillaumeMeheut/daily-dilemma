@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "type-check": "tsc",
+    "lint": "next lint",
+    "prepare": "husky"
   },
   "dependencies": {
     "firebase": "^10.9.0",
@@ -23,14 +25,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
+    "husky": "^9.0.11",
     "typescript": "^5"
-  },
-  "browser": {
-    "fs": false,
-    "os": false,
-    "path": false,
-    "child_process": false,
-    "net": false,
-    "tls": false
   }
 }
