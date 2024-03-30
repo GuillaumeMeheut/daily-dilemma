@@ -1,8 +1,8 @@
 import { addDoc, getDocs, query, where } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from ".";
-import { Lang } from "../i18n/settings";
 import { Comment } from "./types";
+import { Lang } from "../locales/settings";
 
 export async function getComments() {
   const lang: Lang = Lang.FR;

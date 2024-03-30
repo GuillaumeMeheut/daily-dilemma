@@ -3,16 +3,12 @@ import { getAuthenticatedAppForUser } from "@/lib/firebase";
 import Header from "@/components/header";
 import "./global.scss";
 import style from "./layout.module.scss";
-import { dir } from "i18next";
-import { Lang, languages } from "@/lib/i18n/settings";
-import { useTranslation } from "@/lib/i18n";
 import { Judson, Signika } from "next/font/google";
+import { getI18n } from "@/lib/locales/server";
+import { Lang } from "@/lib/locales/settings";
+import { I18nProviderClient } from "@/lib/locales/client";
 
 export const dynamic = "force-dynamic";
-
-export async function generateStaticParams() {
-  return languages.map((lang) => ({ lang }));
-}
 
 const judson = Judson({
   style: "italic",
@@ -40,18 +36,16 @@ export default async function RootLayout({
 }>) {
   const { currentUser } = await getAuthenticatedAppForUser();
 
-  const { t } = await useTranslation(lang, "");
+  const t = await getI18n();
 
   return (
-    <html
-      lang={lang}
-      dir={dir(lang)}
-      className={`${judson.variable} ${signika.variable}`}
-    >
+    <html lang={lang} className={`${judson.variable} ${signika.variable}`}>
       <body>
-        <Header initialUser={currentUser} />
-        <p>{t("test")}</p>
-        {children}
+        <I18nProviderClient locale={lang}>
+          <Header initialUser={currentUser} />
+          <p>{t("hello")} server</p>
+          {children}
+        </I18nProviderClient>
       </body>
     </html>
   );

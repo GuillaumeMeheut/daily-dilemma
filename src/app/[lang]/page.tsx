@@ -1,16 +1,10 @@
 "use client";
 import { addComment } from "@/lib/firebase/firestore";
-import { useTranslation } from "@/lib/i18n/client";
-import { Lang } from "@/lib/i18n/settings";
+import { useI18n } from "@/lib/locales/client";
+import { Lang } from "@/lib/locales/settings";
 import { Timestamp } from "firebase/firestore";
 
-type HomeProps = {
-  params: { lang: Lang };
-};
-
-export default function Home({ params: { lang } }: HomeProps) {
-  const { t } = useTranslation(lang, "");
-
+export default function Home() {
   const postComment = () => {
     addComment({
       userId: "AW9o4rpPaQVGsFLGd8tg0u9JzNJ3",
@@ -20,10 +14,12 @@ export default function Home({ params: { lang } }: HomeProps) {
       timestamp: Timestamp.fromDate(new Date()),
     });
   };
+  const t = useI18n();
 
   return (
     <main>
-      <p>{t("test")}</p>
+      <p>{t("hello")} client</p>
+
       <button onClick={postComment}>Post comment</button>
     </main>
   );

@@ -9,8 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import style from "./style.module.scss";
 import Flag from "./Flag";
-import { useTranslation } from "@/lib/i18n/client";
-import { Lang } from "@/lib/i18n/settings";
+import { Lang } from "@/lib/locales/settings";
 
 export type InitialUser = User | null | undefined;
 
@@ -43,12 +42,11 @@ type HeaderProps = {
 
 export default function Header({ initialUser }: HeaderProps) {
   const { lang }: { lang: Lang } = useParams();
-  const { t } = useTranslation(lang);
   const user = useUserSession(initialUser);
 
   return (
     <header className={style.header}>
-      <p>{t("SuggestDilemma")}</p>
+      {/* <p>{t("SuggestDilemma")}</p> */}
       <h1>Daily dilemma</h1>
       <div>
         <Flag />

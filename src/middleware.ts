@@ -1,40 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import acceptLanguage from "accept-language";
-import { cookieName, fallbackLang, languages } from "./lib/i18n/settings";
+import { createI18nMiddleware } from "next-international/middleware";
+import { NextRequest } from "next/server";
+import { Lang } from "./lib/locales/settings";
 
-acceptLanguage.languages(languages);
+const I18nMiddleware = createI18nMiddleware({
+  locales: [Lang.EN, Lang.FR],
+  defaultLocale: Lang.EN,
+});
+
+export function middleware(request: NextRequest) {
+  return I18nMiddleware(request);
+}
 
 export const config = {
-  // matcher: '/:lang*'
-  matcher: ["/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js).*)"],
+  matcher: ["/((?!api|static|.*\\..*|_next|favicon.ico|robots.txt).*)"],
 };
-
-export function middleware(req: NextRequest) {
-  let lang;
-  if (req.cookies.has(cookieName))
-    lang = acceptLanguage.get(req.cookies.get(cookieName)?.value);
-  if (!lang) lang = acceptLanguage.get(req.headers.get("Accept-Language"));
-  if (!lang) lang = fallbackLang;
-
-  // Redirect if lang in path is not supported
-  if (
-    !languages.some((loc) => req.nextUrl.pathname.startsWith(`/${loc}`)) &&
-    !req.nextUrl.pathname.startsWith("/_next")
-  ) {
-    return NextResponse.redirect(
-      new URL(`/${lang}${req.nextUrl.pathname}`, req.url)
-    );
-  }
-
-  if (req.headers.has("referer")) {
-    const refererUrl = new URL(req.headers.get("referer") || "");
-    const langInReferer = languages.find((l) =>
-      refererUrl.pathname.startsWith(`/${l}`)
-    );
-    const response = NextResponse.next();
-    if (langInReferer) response.cookies.set(cookieName, langInReferer);
-    return response;
-  }
-
-  return NextResponse.next();
-}
