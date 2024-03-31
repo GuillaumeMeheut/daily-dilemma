@@ -3,6 +3,7 @@ import { useChangeLocale } from "@/lib/locales/client";
 import { Lang } from "@/lib/locales/settings";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import Image from "next/image";
 
 type Flag = { img: string; lang: Lang; alt: string };
 
@@ -28,16 +29,16 @@ const Flag = ({ img, lang, alt }: Flag) => {
   //TO-DO temporary solution while waiting for hooks of
   // next-international to be fixed
   const { lang: currentLang }: { lang: Lang } = useParams();
+  const pathname = usePathname();
   if (currentLang === lang) return;
 
-  const pathname = usePathname();
   const newPathname = pathname.replace(currentLang, lang);
 
   return (
     <Link href={newPathname}>
       <li>
         <p>{lang}</p>
-        <img src={img} alt={alt} />
+        <Image src={img} alt={alt} width={60} height={35} />
       </li>
     </Link>
   );

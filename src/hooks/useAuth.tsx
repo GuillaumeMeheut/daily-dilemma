@@ -31,7 +31,7 @@ export function ProvideAuth({ initialUser, children }: ProvideAuthProps) {
 
       if (user?.email !== authUser?.email) router.refresh();
     });
-  }, [user]);
+  }, [user, router]);
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }

@@ -12,9 +12,9 @@ export type BaseComment = {
 export interface Comment extends BaseComment {
   id: string;
   repliesCount: number;
-  replies: Reply[];
 }
 
 export interface Reply extends BaseComment {
   id: string;
+  parentId: string;
 }
