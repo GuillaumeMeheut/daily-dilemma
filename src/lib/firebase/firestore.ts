@@ -1,4 +1,11 @@
-import { addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from ".";
 import { Comment } from "./types";
@@ -6,7 +13,12 @@ import { Lang } from "../locales/settings";
 
 export async function getComments() {
   const lang: Lang = Lang.FR;
-  let q = query(collection(db, "comments"), where("lang", "==", lang));
+  let q = query(
+    collection(db, "comments"),
+    orderBy("upvotesCount", "asc"),
+    where("lang", "==", lang),
+    limit(10)
+  );
 
   const results = await getDocs(q);
 

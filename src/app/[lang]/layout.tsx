@@ -7,6 +7,7 @@ import { Judson, Signika } from "next/font/google";
 import { getI18n } from "@/lib/locales/server";
 import { Lang } from "@/lib/locales/settings";
 import { I18nProviderClient } from "@/lib/locales/client";
+import { ProvideAuth } from "@/hooks/useAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -42,9 +43,11 @@ export default async function RootLayout({
     <html lang={lang} className={`${judson.variable} ${signika.variable}`}>
       <body>
         <I18nProviderClient locale={lang}>
-          <Header initialUser={currentUser} />
-          <p>{t("hello")} server</p>
-          {children}
+          <ProvideAuth initialUser={currentUser}>
+            <Header />
+            <p>{t("hello")} server</p>
+            {children}
+          </ProvideAuth>
         </I18nProviderClient>
       </body>
     </html>

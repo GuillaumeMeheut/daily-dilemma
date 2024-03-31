@@ -1,10 +1,20 @@
 import { Timestamp } from "firebase/firestore";
 import { Lang } from "../locales/settings";
 
-export type Comment = {
+export type BaseComment = {
   userId: string;
-  text: string;
+  content: string;
   lang: Lang;
-  upVote: number;
+  upvotesCount: number;
+  upvoters: string[];
   timestamp: Timestamp;
 };
+export interface Comment extends BaseComment {
+  id: string;
+  repliesCount: number;
+  replies: Reply[];
+}
+
+export interface Reply extends BaseComment {
+  id: string;
+}

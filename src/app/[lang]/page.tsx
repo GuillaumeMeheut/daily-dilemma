@@ -1,16 +1,25 @@
 "use client";
+import { useAuth } from "@/hooks/useAuth";
 import { addComment } from "@/lib/firebase/firestore";
 import { useI18n } from "@/lib/locales/client";
 import { Lang } from "@/lib/locales/settings";
 import { Timestamp } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
+  const user = useAuth();
+
   const postComment = () => {
+    if (!user) return;
     addComment({
-      userId: "AW9o4rpPaQVGsFLGd8tg0u9JzNJ3",
-      text: "Texte en francais",
-      lang: Lang.EN,
-      upVote: 0,
+      userId: user.uid,
+      content: "Texte en francais",
+      lang: Lang.FR,
+      upvotesCount: 0,
+      repliesCount: 0,
+      replies: [],
+      upvoters: [],
+      id: uuidv4(),
       timestamp: Timestamp.fromDate(new Date()),
     });
   };
