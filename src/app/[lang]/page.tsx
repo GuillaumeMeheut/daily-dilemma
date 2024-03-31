@@ -17,7 +17,6 @@ export default function Home() {
       lang: Lang.FR,
       upvotesCount: 0,
       repliesCount: 0,
-      replies: [],
       upvoters: [],
       id: uuidv4(),
       timestamp: Timestamp.fromDate(new Date()),
