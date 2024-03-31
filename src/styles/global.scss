@@ -1,0 +1,15 @@
+@import "./reset.css";
+
+h1 {
+  font-size: 64px;
+  font-style: italic;
+  font-family: var(--font-judson);
+}
+
+p {
+  font-size: 18px;
+}
+
+button {
+  cursor: pointer;
+}

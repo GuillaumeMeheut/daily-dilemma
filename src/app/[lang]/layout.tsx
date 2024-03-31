@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { getAuthenticatedAppForUser } from "@/lib/firebase";
 import Header from "@/components/header";
-import "./global.scss";
+import "../../styles/global.scss";
 import style from "./layout.module.scss";
 import { Judson, Signika } from "next/font/google";
-import { getI18n } from "@/lib/locales/server";
 import { Lang } from "@/lib/locales/settings";
 import { I18nProviderClient } from "@/lib/locales/client";
 import { ProvideAuth } from "@/hooks/useAuth";
@@ -37,15 +36,12 @@ export default async function RootLayout({
 }>) {
   const { currentUser } = await getAuthenticatedAppForUser();
 
-  const t = await getI18n();
-
   return (
     <html lang={lang} className={`${judson.variable} ${signika.variable}`}>
-      <body>
+      <body className={style.body}>
         <I18nProviderClient locale={lang}>
           <ProvideAuth initialUser={currentUser}>
             <Header />
-            <p>{t("hello")} server</p>
             {children}
           </ProvideAuth>
         </I18nProviderClient>

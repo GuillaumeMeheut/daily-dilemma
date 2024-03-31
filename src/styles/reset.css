@@ -42,6 +42,10 @@ input,
 select {
   margin: 0;
 }
+button {
+  background: none;
+  border: none;
+}
 html {
   box-sizing: border-box;
 }

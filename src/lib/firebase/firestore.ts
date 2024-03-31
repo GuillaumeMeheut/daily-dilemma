@@ -11,11 +11,12 @@ import { db } from ".";
 import { Comment } from "./types";
 import { Lang } from "../locales/settings";
 
-export async function getComments(lang: Lang) {
+export async function getComments(lang: Lang): Promise<Comment[]> {
+  "use server";
   let q = query(
     collection(db, "comments"),
-    orderBy("upvotesCount", "asc"),
     where("lang", "==", lang),
+    orderBy("upvotesCount", "desc"),
     limit(10)
   );
 
@@ -25,10 +26,11 @@ export async function getComments(lang: Lang) {
     return {
       id: doc.id,
       ...doc.data(),
-    };
+    } as Comment;
   });
 }
 export async function getReplies(lang: Lang, parentId: string) {
+  "use server";
   let q = query(
     collection(db, "replies"),
     orderBy("timestamp", "asc"),
@@ -47,6 +49,7 @@ export async function getReplies(lang: Lang, parentId: string) {
   });
 }
 
-export async function addComment(data: Comment) {
+export async function addComment(data: Omit<Comment, "id">) {
+  "use server";
   await addDoc(collection(db, "comments"), data);
 }

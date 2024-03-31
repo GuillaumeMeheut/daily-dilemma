@@ -1,34 +1,17 @@
-"use client";
-import { useAuth } from "@/hooks/useAuth";
-import { addComment } from "@/lib/firebase/firestore";
-import { useI18n } from "@/lib/locales/client";
-import { Lang } from "@/lib/locales/settings";
-import { Timestamp } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
+import Comments from "@/components/comments";
+import Dilemma from "@/components/dilemma";
+import { getComments } from "@/lib/firebase/firestore";
+import { getCurrentLocale } from "@/lib/locales/server";
+import style from "./page.module.scss";
 
-export default function Home() {
-  const user = useAuth();
-
-  const postComment = () => {
-    if (!user) return;
-    addComment({
-      userId: user.uid,
-      content: "Texte en francais",
-      lang: Lang.FR,
-      upvotesCount: 0,
-      repliesCount: 0,
-      upvoters: [],
-      id: uuidv4(),
-      timestamp: Timestamp.fromDate(new Date()),
-    });
-  };
-  const t = useI18n();
-
+export default async function Home() {
   return (
-    <main>
-      <p>{t("hello")} client</p>
+    <main className={style.main}>
+      <Dilemma />
 
-      <button onClick={postComment}>Post comment</button>
+      {/* Dilemma navigation */}
+
+      <Comments />
     </main>
   );
 }

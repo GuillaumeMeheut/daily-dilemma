@@ -37,7 +37,6 @@ const Flag = ({ img, lang, alt }: Flag) => {
   return (
     <Link href={newPathname}>
       <li>
-        <p>{lang}</p>
         <Image src={img} alt={alt} width={60} height={35} />
       </li>
     </Link>

@@ -1,0 +1,12 @@
+@import "../../styles/variables";
+
+.container {
+  padding: 75px;
+  border: 1px solid $white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 75px;
+}
