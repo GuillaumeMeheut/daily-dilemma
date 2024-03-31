@@ -9,7 +9,7 @@ import {
 import { collection } from "firebase/firestore";
 import { db } from ".";
 import { Comment } from "./types";
-import { Lang } from "../locales/settings";
+import { Lang } from "../locales/types";
 
 export async function getComments(lang: Lang): Promise<Comment[]> {
   "use server";

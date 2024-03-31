@@ -4,7 +4,7 @@ import Header from "@/components/header";
 import "../../styles/global.scss";
 import style from "./layout.module.scss";
 import { Judson, Signika } from "next/font/google";
-import { Lang } from "@/lib/locales/settings";
+import { Lang } from "@/lib/locales/types";
 import { I18nProviderClient } from "@/lib/locales/client";
 import { ProvideAuth } from "@/hooks/useAuth";
 

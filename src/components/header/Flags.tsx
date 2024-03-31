@@ -1,6 +1,5 @@
 "use client";
-import { useChangeLocale } from "@/lib/locales/client";
-import { Lang } from "@/lib/locales/settings";
+import { Lang } from "@/lib/locales/types";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import Image from "next/image";

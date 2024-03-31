@@ -78,11 +78,9 @@ export async function getAuthenticatedAppForUser(
 
       await signInWithCustomToken(auth, customToken);
     }
-    console.log("server: ", app);
     return { app, currentUser: auth.currentUser };
   }
   // client
-  console.log("client: ", firebaseApp);
 
   return { app: firebaseApp, user: auth.currentUser?.toJSON() };
 }

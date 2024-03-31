@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { Lang } from "../locales/settings";
+import { Lang } from "../locales/types";
 
 export type BaseComment = {
   userId: string;

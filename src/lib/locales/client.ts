@@ -1,6 +1,6 @@
 "use client";
 import { createI18nClient } from "next-international/client";
-import { Lang } from "./settings";
+import { Lang } from "./types";
 
 export const {
   useI18n,
