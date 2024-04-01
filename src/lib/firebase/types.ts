@@ -18,3 +18,10 @@ export interface Reply extends BaseComment {
   id: string;
   parentId: string;
 }
+
+export type OnClickUpvoteProps = {
+  commentId: string;
+  commentUserId: string;
+  upvoters: any;
+  userId?: string;
+};

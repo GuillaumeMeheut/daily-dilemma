@@ -7,6 +7,8 @@ import { Judson, Signika } from "next/font/google";
 import { Lang } from "@/lib/locales/types";
 import { I18nProviderClient } from "@/lib/locales/client";
 import { ProvideAuth } from "@/hooks/useAuth";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +45,7 @@ export default async function RootLayout({
           <ProvideAuth initialUser={currentUser}>
             <Header />
             {children}
+            <ToastContainer />
           </ProvideAuth>
         </I18nProviderClient>
       </body>

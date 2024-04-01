@@ -1,31 +1,36 @@
-import type { Comment } from "@/lib/firebase/types";
+"use client";
+import type { Comment, OnClickUpvoteProps } from "@/lib/firebase/types";
 import style from "./comment.module.scss";
+import Upvote from "./upvote";
 
 type CommentProps = {
   comment: Comment;
+  onClickUpvote: ({
+    commentId,
+    commentUserId,
+    upvoters,
+    userId,
+  }: OnClickUpvoteProps) => Promise<Comment | undefined>;
+  comments: Comment[];
+  setComments: (comments: Comment[]) => void;
 };
 
-export default function Comment({ comment }: CommentProps) {
+export default function Comment({
+  comment,
+  onClickUpvote,
+  comments,
+  setComments,
+}: CommentProps) {
   const { content, upvotesCount, upvoters, repliesCount } = comment;
-  const fakeUserId = "AW9o4rpPaQVGsFLGd8tg0u9JzNJ3";
-  const isUpvoted = upvoters.includes(fakeUserId);
+
   return (
     <div className={style.wrapper}>
-      <div className={style.upVoteContainer}>
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 15 15"
-          fill={isUpvoted ? "white" : "none"}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.5 0.703545L13.7842 6.92424H10.3699H9.8699V7.42424V14.5H5.1301V7.42424V6.92424H4.6301H1.21583L7.5 0.703545Z"
-            stroke="white"
-          />
-        </svg>
-        <p>({upvotesCount})</p>
-      </div>
+      <Upvote
+        comment={comment}
+        onClickUpvote={onClickUpvote}
+        comments={comments}
+        setComments={setComments}
+      />
       <div>
         <p>{content}</p>
 
