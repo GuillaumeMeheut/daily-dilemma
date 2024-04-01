@@ -12,7 +12,6 @@ import {
   arrayUnion,
   arrayRemove,
   getDoc,
-  setDoc,
 } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from ".";

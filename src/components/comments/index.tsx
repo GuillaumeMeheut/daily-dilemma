@@ -2,8 +2,7 @@
 import Comment from "./comment";
 import type { Comment as CommentType } from "@/lib/firebase/types";
 import style from "./index.module.scss";
-import { getCurrentLocale } from "@/lib/locales/server";
-import { getComments, triggerUpvote } from "@/lib/firebase/firestore";
+import { triggerUpvote } from "@/lib/firebase/firestore";
 import { useState } from "react";
 
 type CommentsProps = {

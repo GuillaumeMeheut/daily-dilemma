@@ -23,14 +23,14 @@ export default function Upvote({
   setComments,
 }: UpvoteProps) {
   const user = useAuth();
-  const { upvotesCount, upvoters, id, userId, lang } = comment;
+  const { upvotesCount, upvoters, id, userId } = comment;
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [upvCount, setUpvCount] = useState(upvotesCount);
   const [isMakingReq, setIsMakingReq] = useState(false);
 
   useEffect(() => {
     if (user) setIsUpvoted(upvoters.includes(user?.uid));
-  }, [user?.uid]);
+  }, [user, upvoters]);
 
   const handleUpvote = async () => {
     const isUpvotedState = isUpvoted;
