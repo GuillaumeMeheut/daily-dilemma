@@ -1,8 +1,35 @@
 import { useAuth } from "@/hooks/useAuth";
 import type { Comment, OnClickUpvoteProps } from "@/lib/firebase/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import style from "./upvote.module.scss";
 import { toast } from "react-toastify";
+
+const SPAM_THRESHOLD = 5;
+const SPAM_COOLDOWN_DURATION = 5000;
+
+const useUpvoteSpamPrevention = () => {
+  const [spamCount, setSpamCount] = useState(0);
+  const [isCooldown, setIsCooldown] = useState(false);
+
+  const handleSpam = useCallback(() => {
+    if (isCooldown) return;
+
+    setSpamCount((count) => count + 1);
+
+    if (spamCount >= SPAM_THRESHOLD) {
+      setIsCooldown(true);
+      toast.error("Stop spamming", {
+        position: "bottom-left",
+      });
+      setTimeout(() => {
+        setSpamCount(0);
+        setIsCooldown(false);
+      }, SPAM_COOLDOWN_DURATION);
+    }
+  }, [spamCount, isCooldown]);
+
+  return { isCooldown, handleSpam };
+};
 
 type UpvoteProps = {
   comment: Comment;
@@ -27,12 +54,15 @@ export default function Upvote({
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [upvCount, setUpvCount] = useState(upvotesCount);
   const [isMakingReq, setIsMakingReq] = useState(false);
+  const { isCooldown, handleSpam } = useUpvoteSpamPrevention();
 
   useEffect(() => {
     if (user) setIsUpvoted(upvoters.includes(user?.uid));
   }, [user, upvoters]);
 
   const handleUpvote = async () => {
+    handleSpam();
+    if (isCooldown) return;
     const isUpvotedState = isUpvoted;
     try {
       if (!user) return;
@@ -64,7 +94,10 @@ export default function Upvote({
 
   return (
     <div className={style.upVoteContainer}>
-      <button onClick={handleUpvote} disabled={!user || isMakingReq}>
+      <button
+        onClick={handleUpvote}
+        disabled={!user || isMakingReq || isCooldown}
+      >
         <svg
           width="15"
           height="15"
