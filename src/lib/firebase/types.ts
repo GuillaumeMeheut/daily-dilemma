@@ -2,6 +2,7 @@ import { Timestamp } from "firebase/firestore";
 import { Lang } from "../locales/types";
 
 export type BaseComment = {
+  id: string;
   userId: string;
   content: string;
   lang: Lang;
@@ -10,12 +11,10 @@ export type BaseComment = {
   timestamp: Timestamp;
 };
 export interface Comment extends BaseComment {
-  id: string;
   repliesCount: number;
 }
 
 export interface Reply extends BaseComment {
-  id: string;
   parentId: string;
 }
 

@@ -12,6 +12,7 @@ import {
   arrayUnion,
   arrayRemove,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from ".";
@@ -68,8 +69,29 @@ export async function getReplies(lang: Lang, parentId: string) {
   });
 }
 
-export async function addComment(data: Omit<Comment, "id">) {
-  await addDoc(collection(db, "comments"), data);
+export async function addComment(
+  formData: FormData,
+  userId: string,
+  lang: Lang
+) {
+  const content = formData.get("content") as string;
+  if (!content) return;
+
+  const data: Omit<Comment, "id"> = {
+    userId,
+    content,
+    lang,
+    upvotesCount: 0,
+    upvoters: [],
+    repliesCount: 0,
+    timestamp: Timestamp.fromDate(new Date()),
+  };
+
+  const doc = await addDoc(collection(db, "comments"), data);
+
+  const comment = await getComment(doc.id);
+
+  return comment;
 }
 
 export async function triggerUpvote({

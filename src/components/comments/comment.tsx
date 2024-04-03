@@ -21,7 +21,7 @@ export default function Comment({
   comments,
   setComments,
 }: CommentProps) {
-  const { content, upvotesCount, upvoters, repliesCount } = comment;
+  const { content, repliesCount } = comment;
 
   return (
     <div className={style.wrapper}>
