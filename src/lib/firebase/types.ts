@@ -5,12 +5,12 @@ export type BaseComment = {
   id: string;
   userId: string;
   content: string;
-  lang: Lang;
   upvotesCount: number;
   upvoters: string[];
   timestamp: Timestamp;
 };
 export interface Comment extends BaseComment {
+  lang: Lang;
   repliesCount: number;
 }
 

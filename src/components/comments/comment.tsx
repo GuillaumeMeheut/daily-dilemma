@@ -2,6 +2,7 @@
 import type { Comment, OnClickUpvoteProps } from "@/lib/firebase/types";
 import style from "./comment.module.scss";
 import Upvote from "./upvote";
+import Replies from "./replies";
 
 type CommentProps = {
   comment: Comment;
@@ -21,7 +22,7 @@ export default function Comment({
   comments,
   setComments,
 }: CommentProps) {
-  const { content, repliesCount } = comment;
+  const { content, repliesCount, id } = comment;
 
   return (
     <div className={style.wrapper}>
@@ -34,12 +35,7 @@ export default function Comment({
       <div>
         <p>{content}</p>
 
-        {/* Maybe make it into a single client component */}
-        {repliesCount !== 0 && (
-          <button>
-            <p className={style.reply}>View reply ({repliesCount})</p>
-          </button>
-        )}
+        <Replies repliesCount={repliesCount} parentId={id} />
       </div>
     </div>
   );

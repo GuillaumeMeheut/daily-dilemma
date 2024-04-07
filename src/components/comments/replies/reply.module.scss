@@ -1,0 +1,32 @@
+@import "../../../styles/variables";
+
+.container {
+  margin-top: 20px;
+
+  p {
+    font-size: 18px;
+    position: relative;
+
+    padding: 10px 0 10px 10px;
+    border-left: 1px solid $white;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 5px;
+      height: 1px;
+      background-color: $white;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      width: 5px;
+      height: 1px;
+      background-color: $white;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 @import "./reset.css";
+@import "./variables";
 
 body {
   font-family: var(--font-signika);
@@ -11,6 +12,7 @@ h1 {
 }
 
 p {
+  color: $white;
   font-size: 18px;
 }
 

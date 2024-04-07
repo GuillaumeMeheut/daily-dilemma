@@ -1,0 +1,46 @@
+@import "../../../styles/variables";
+
+.container {
+  margin-top: 10px;
+  margin-left: 10px;
+
+  p {
+    color: $white;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+
+  button {
+    color: $white;
+  }
+}
+
+.repliesButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.repliesButton {
+  font-weight: 300;
+  font-size: 14px;
+
+  position: relative;
+  margin-left: 50px;
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    top: 50%;
+    left: -30px;
+
+    width: 20px;
+    height: 1px;
+
+    background-color: $white;
+  }
+}
