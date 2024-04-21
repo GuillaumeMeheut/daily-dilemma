@@ -5,6 +5,7 @@ import type { Reply as ReplyType } from "@/lib/firebase/types";
 import { useMemo, useState } from "react";
 import Reply from "./reply";
 import Loader from "@/components/loader";
+import { useI18n } from "@/lib/locales/client";
 
 type RepliesProps = {
   repliesCount: number;
@@ -12,6 +13,7 @@ type RepliesProps = {
 };
 
 export default function Replies({ repliesCount, parentId }: RepliesProps) {
+  const t = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [replies, setReplies] = useState<ReplyType[]>([]);
   const [showReplies, setShowReplies] = useState(true);
@@ -42,14 +44,16 @@ export default function Replies({ repliesCount, parentId }: RepliesProps) {
     <div className={style.container}>
       <div className={style.buttonContainer}>
         <button onClick={onClickAnswer} className={style.answer}>
-          Reply
+          {t("Reply")}
         </button>
         {repliesCount !== 0 && (
           <>
             {calculatedRepliesCount !== 0 || !showReplies ? (
               <div className={style.repliesButtonContainer}>
                 <button onClick={viewReplies} className={style.repliesButton}>
-                  View {calculatedRepliesCount === 1 ? "reply" : "replies"} (
+                  {/*TODO check variable name */}
+                  {t("View")}
+                  {calculatedRepliesCount === 1 ? "reply" : "replies"} (
                   {showReplies ? calculatedRepliesCount : replies.length})
                 </button>
                 {isLoading && <Loader size={14} />}
@@ -59,7 +63,7 @@ export default function Replies({ repliesCount, parentId }: RepliesProps) {
                 onClick={() => setShowReplies(false)}
                 className={style.repliesButton}
               >
-                Hide replies
+                {t("HideRep")}
               </button>
             )}
           </>

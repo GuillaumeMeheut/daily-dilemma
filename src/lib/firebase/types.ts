@@ -17,10 +17,3 @@ export interface Comment extends BaseComment {
 export interface Reply extends BaseComment {
   parentId: string;
 }
-
-export type OnClickUpvoteProps = {
-  commentId: string;
-  commentUserId: string;
-  upvoters: any;
-  userId?: string;
-};

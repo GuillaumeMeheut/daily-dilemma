@@ -2,7 +2,6 @@
 import Comment from "./comment";
 import type { Comment as CommentType } from "@/lib/firebase/types";
 import style from "./index.module.scss";
-import { triggerUpvote } from "@/lib/firebase/firestore";
 import { useState } from "react";
 import Textarea from "./textarea";
 
@@ -20,7 +19,6 @@ export default function Comments({ comments: comments2 }: CommentsProps) {
           <Comment
             key={comment.id}
             comment={comment}
-            onClickUpvote={triggerUpvote}
             comments={comments}
             setComments={setComments}
           />

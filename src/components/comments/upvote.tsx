@@ -1,8 +1,9 @@
 import { useAuth } from "@/hooks/useAuth";
-import type { Comment, OnClickUpvoteProps } from "@/lib/firebase/types";
+import type { Comment } from "@/lib/firebase/types";
 import { useCallback, useEffect, useState } from "react";
 import style from "./upvote.module.scss";
 import { toast } from "react-toastify";
+import { triggerUpvote } from "@/lib/firebase/firestore";
 
 const SPAM_THRESHOLD = 5;
 const SPAM_COOLDOWN_DURATION = 5000;
@@ -33,26 +34,19 @@ const useUpvoteSpamPrevention = () => {
 
 type UpvoteProps = {
   comment: Comment;
-  onClickUpvote: ({
-    commentId,
-    commentUserId,
-    upvoters,
-    userId,
-  }: OnClickUpvoteProps) => Promise<Comment | undefined>;
   comments: Comment[];
   setComments: (comments: Comment[]) => void;
 };
 
 export default function Upvote({
   comment,
-  onClickUpvote,
   comments,
   setComments,
 }: UpvoteProps) {
   const user = useAuth();
   const { upvotesCount, upvoters, id, userId } = comment;
   const [isUpvoted, setIsUpvoted] = useState(false);
-  const [upvCount, setUpvCount] = useState(upvotesCount);
+  const [upvoteCount, setUpvoteCount] = useState(upvotesCount);
   const [isMakingReq, setIsMakingReq] = useState(false);
   const { isCooldown, handleSpam } = useUpvoteSpamPrevention();
 
@@ -68,13 +62,13 @@ export default function Upvote({
       if (!user) return;
       if (userId === user.uid) throw new Error("Can't upvote your own post");
       setIsUpvoted(!isUpvotedState);
-      setUpvCount(isUpvoted ? upvCount - 1 : upvCount + 1);
+      setUpvoteCount(isUpvoted ? upvoteCount - 1 : upvoteCount + 1);
       setIsMakingReq(true);
-      const newComment = await onClickUpvote({
+      const newComment = await triggerUpvote({
         commentId: id,
         commentUserId: userId,
         upvoters,
-        userId: user?.uid,
+        userId: user.uid,
       });
       if (newComment) {
         const index = comments.findIndex((x) => x.id === id);
@@ -86,7 +80,7 @@ export default function Upvote({
         position: "bottom-left",
       });
       setIsUpvoted(isUpvotedState);
-      setUpvCount(upvCount);
+      setUpvoteCount(upvoteCount);
     } finally {
       setIsMakingReq(false);
     }
@@ -111,7 +105,7 @@ export default function Upvote({
           />
         </svg>
       </button>
-      <p>({upvCount})</p>
+      <p>({upvoteCount})</p>
     </div>
   );
 }

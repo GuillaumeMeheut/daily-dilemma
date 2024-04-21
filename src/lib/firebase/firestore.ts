@@ -16,8 +16,9 @@ import {
 } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from ".";
-import { Comment, OnClickUpvoteProps, Reply } from "./types";
+import { Comment, Reply } from "./types";
 import { Lang } from "../locales/types";
+import { getI18n } from "../locales/server";
 
 export async function getComments(lang: Lang): Promise<Comment[]> {
   let q = query(
@@ -56,8 +57,11 @@ export async function addComment(
   userId: string,
   lang: Lang
 ) {
+  const t = await getI18n();
+
   const content = formData.get("content") as string;
-  if (!content) return;
+  if (typeof content !== "string") return;
+  if (!content) throw new Error(t("NoContent"));
 
   const data: Omit<Comment, "id"> = {
     userId,
@@ -70,6 +74,7 @@ export async function addComment(
   };
 
   const doc = await addDoc(collection(db, "comments"), data);
+  if (!content) throw new Error(t("NoContent"));
 
   const comment = await getComment(doc.id);
 
@@ -147,33 +152,44 @@ export async function addReply(
   return reply;
 }
 
+type triggerUpvoteProps = {
+  commentId: string;
+  commentUserId: string;
+  upvoters: any;
+  userId: string;
+};
+
 export async function triggerUpvote({
   commentId,
   commentUserId,
   upvoters,
   userId,
-}: OnClickUpvoteProps): Promise<Comment | undefined> {
-  if (!userId) throw new Error("No user id found");
-  if (commentUserId === userId) throw new Error("Can't upvote your own post");
+}: triggerUpvoteProps): Promise<Comment | undefined> {
+  const t = await getI18n();
+
+  if (!userId) throw new Error(t("ErrorNoUserIdFound"));
+  if (commentUserId === userId) throw new Error(t("CantUpvoteOwnPost"));
 
   const isUpvoted = upvoters.includes(userId);
 
-  const commentsRef = doc(collection(db, "comments"), commentId);
-  if (commentsRef) {
+  const commentRef = doc(collection(db, "comments"), commentId);
+  if (commentRef) {
     if (isUpvoted) {
-      await updateDoc(commentsRef, {
+      await updateDoc(commentRef, {
         upvotesCount: increment(-1),
         upvoters: arrayRemove(userId),
       });
     } else {
-      await updateDoc(commentsRef, {
+      await updateDoc(commentRef, {
         upvotesCount: increment(1),
         upvoters: arrayUnion(userId),
       });
     }
   } else {
-    throw new Error("Collection not found");
+    throw new Error(t("CommentNotFound"));
   }
+  //TODO Check if its useful to get the comment and if we cant
+  //just update the previous comment depending on the result
   const updatedComment = await getComment(commentId);
 
   return updatedComment;
