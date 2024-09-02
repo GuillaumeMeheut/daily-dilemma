@@ -35,7 +35,6 @@ export default function RootLayout({
         <main className="flex min-h-screen flex-col items-center justify-between md:p-24 p-8">
           {children}
         </main>
-
         <Suspense>
           <Toaster />
         </Suspense>
