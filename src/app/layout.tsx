@@ -26,14 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          inter.variable
-        )}
-      >
+      <body className={cn("font-sans antialiased", inter.variable)}>
         <Navbar />
-        <main className="flex min-h-screen flex-col items-center justify-between md:p-24 p-8">
+        <main className="min-h-[calc(100vh-72px)] flex flex-col items-center justify-center p-4">
           {children}
         </main>
         <Suspense>

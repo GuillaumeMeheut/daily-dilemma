@@ -11,7 +11,7 @@ export const Navbar = async () => {
   } = await supabase.auth.getUser();
 
   return (
-    <nav className="px-6 py-4 bg-white flex justify-end sticky top-0">
+    <nav className="sticky top-0 px-6 py-4 bg-white flex justify-end  ">
       <Link href="/" className="mr-auto">
         <Button variant="link">Today&apos;s Dilemma</Button>
       </Link>
