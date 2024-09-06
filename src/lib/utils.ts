@@ -94,3 +94,14 @@ export const getErrorRedirect = (
     disableButton,
     arbitraryParams
   );
+
+export const getChoicesPercentage = (count: number, totalCount: number) => {
+  const percentage = (count / totalCount) * 100;
+
+  return `${percentage.toFixed(1)}% (${count}) `;
+};
+
+//Get date as format yyyy-MM-dd
+export const getSupabaseFormatDate = (date: Date) => {
+  return date.toISOString().slice(0, 10);
+};

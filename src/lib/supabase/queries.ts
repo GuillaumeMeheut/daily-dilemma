@@ -9,15 +9,72 @@ export const getUser = cache(async (supabase: SupabaseClient) => {
   return { user, error };
 });
 
-export const getDilemma = cache(async (supabase: SupabaseClient) => {
-  const { data: dilemma, error } = await supabase
-    .from("dilemmas")
-    .select()
-    .order("id", { ascending: false })
-    .single();
+export const getUserProfile = cache(
+  async (supabase: SupabaseClient, userId: string) => {
+    const { data: userProfile, error } = await supabase
+      .from("user_profiles")
+      .select()
+      .eq("id", userId)
+      .single();
 
-  return dilemma;
-});
+    return userProfile;
+  }
+);
+
+type DilemmaAnswer = { id: number; choice_id: number } | null;
+
+export const getDilemmaAnswer = cache(
+  async (
+    supabase: SupabaseClient,
+    userId: string,
+    dilemmaId: number
+  ): Promise<DilemmaAnswer> => {
+    const { data: dilemmaAnswer, error } = await supabase
+      .from("user_responses")
+      .select("id, choice_id")
+      .eq("user_id", userId)
+      .eq("dilemma_id", dilemmaId)
+      .single();
+
+    if (error) {
+      return null;
+    }
+
+    return dilemmaAnswer;
+  }
+);
+
+export const addDilemmaResponse = cache(
+  async (
+    supabase: SupabaseClient,
+    userId: string,
+    dilemmaId: number,
+    choiceId: number
+  ) => {
+    const { error } = await supabase.from("user_responses").insert([
+      {
+        user_id: userId,
+        dilemma_id: dilemmaId,
+        choice_id: choiceId,
+      },
+    ]);
+    if (error) {
+      console.log(error.message);
+    }
+  }
+);
+
+export const getDilemmaByDate = cache(
+  async (supabase: SupabaseClient, date: string) => {
+    const { data: dilemma, error } = await supabase
+      .from("dilemmas")
+      .select()
+      .eq("posting_date", date)
+      .single();
+
+    return dilemma;
+  }
+);
 
 export const getChoices = cache(
   async (supabase: SupabaseClient, dilemmaId: number) => {
