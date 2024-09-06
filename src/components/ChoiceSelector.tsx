@@ -31,14 +31,10 @@ export const ChoiceSelector = ({
 }: ChoiceSelectorProps) => {
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
-  // const router = useRouter();
 
   const handleSubmit = (e: FormData) => {
     startTransition(async () => {
-      // const { redirectPath, data } = await submitChoice(e, user, dilemmaId);
       await submitChoice(e, user, dilemmaId);
-
-      // router.push(redirectPath);
     });
   };
 

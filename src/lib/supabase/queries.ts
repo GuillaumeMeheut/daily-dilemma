@@ -64,6 +64,30 @@ export const addDilemmaResponse = cache(
   }
 );
 
+export const addDilemmaResponseAndIncreaseChoiceCount = cache(
+  async (
+    supabase: SupabaseClient,
+    userId: string,
+    dilemmaId: number,
+    choiceId: number
+  ) => {
+    const { data, error } = await supabase.rpc(
+      "increment_choice_and_add_response",
+      {
+        choice_id: choiceId,
+        user_id: userId,
+        dilemma_id: dilemmaId,
+      }
+    );
+
+    if (error) {
+      return error.message;
+    }
+
+    return data;
+  }
+);
+
 export const getDilemmaByDate = cache(
   async (supabase: SupabaseClient, date: string) => {
     const { data: dilemma, error } = await supabase
@@ -81,7 +105,8 @@ export const getChoices = cache(
     const { data: choices, error } = await supabase
       .from("choices")
       .select()
-      .eq("dilemma_id", dilemmaId);
+      .eq("dilemma_id", dilemmaId)
+      .order("id", { ascending: false });
 
     return choices;
   }

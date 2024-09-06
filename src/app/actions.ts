@@ -1,6 +1,9 @@
 "use server";
 
-import { addDilemmaResponse, getDilemmaAnswer } from "@/lib/supabase/queries";
+import {
+  addDilemmaResponseAndIncreaseChoiceCount,
+  getDilemmaAnswer,
+} from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { getErrorRedirect, getStatusRedirect } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
@@ -31,9 +34,14 @@ export const submitChoice = async (
     );
   }
 
-  const choice = Number(formData.get("choice"));
+  const choiceId = Number(formData.get("choice"));
 
-  await addDilemmaResponse(supabase, user.id, dilemmaId, choice);
+  await addDilemmaResponseAndIncreaseChoiceCount(
+    supabase,
+    user.id,
+    dilemmaId,
+    choiceId
+  );
 
   redirect(getStatusRedirect(`/`, "Success!", "Response submitted."));
 };
