@@ -65,7 +65,9 @@ export const ChoiceSelector = ({
                   checked={selectedChoice === id}
                   onChange={() => !answered && setSelectedChoice(id)}
                 />
-                {answer} ({psychological_profile})
+                <p className="mr-auto">
+                  {answer} ({psychological_profile})
+                </p>
                 {answered && (
                   <>
                     <p className="text-center whitespace-nowrap h-fit ml-8">

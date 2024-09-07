@@ -21,6 +21,17 @@ export const getUserProfile = cache(
   }
 );
 
+export const getUserResponses = cache(
+  async (supabase: SupabaseClient, userId: string) => {
+    const { data: userProfile, error } = await supabase
+      .from("user_responses")
+      .select()
+      .eq("user_id", userId);
+
+    return userProfile;
+  }
+);
+
 type DilemmaAnswer = { id: number; choice_id: number } | null;
 
 export const getDilemmaAnswer = cache(

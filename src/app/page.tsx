@@ -36,7 +36,7 @@ export default async function Home() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Daily Dilemma</CardTitle>
         <CardDescription>Make your choice wisely</CardDescription>
