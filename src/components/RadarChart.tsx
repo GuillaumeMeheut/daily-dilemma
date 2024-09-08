@@ -1,5 +1,6 @@
 "use client";
 
+import { capitalizeFirstLetter } from "@/lib/utils";
 import {
   RadarChart,
   PolarGrid,
@@ -8,15 +9,29 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  { trait: "Openness", A: 7, fullMark: 150 },
-  { trait: "Conscientiousness", A: -10, fullMark: 150 },
-  { trait: "Extraversion", A: 86, fullMark: 150 },
-  { trait: "Agreeableness", A: 99, fullMark: 150 },
-  { trait: "Neuroticism", A: 85, fullMark: 150 },
-];
+type Stats = {
+  openness: number;
+  conscientiousness: number;
+  extraversion: number;
+  agreeableness: number;
+  neuroticism: number;
+};
 
-export default function CustomRadarChart() {
+type CustomRadarProps = {
+  stats: Stats;
+};
+
+export default function CustomRadarChart({ stats }: CustomRadarProps) {
+  const data = Object.keys(stats).map((key) => {
+    const typedKey = key as keyof Stats;
+    return {
+      trait: capitalizeFirstLetter(key) + key.slice(1),
+      A: stats[typedKey],
+      fullMark: 150,
+    };
+  });
+  console.log(data);
+
   return (
     <ResponsiveContainer width="100%" height={400}>
       <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>

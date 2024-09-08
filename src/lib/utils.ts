@@ -105,3 +105,6 @@ export const getChoicesPercentage = (count: number, totalCount: number) => {
 export const getSupabaseFormatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };
+
+export const capitalizeFirstLetter = (s: string) =>
+  s[0].toUpperCase() + s.slice(1);

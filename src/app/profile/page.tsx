@@ -29,6 +29,24 @@ export default async function Profile() {
   // }
   const profile = await getUserProfile(supabase, user.id);
 
+  const stats = {
+    openness: 20,
+    conscientiousness: 8,
+    extraversion: -6,
+    agreeableness: 33,
+    neuroticism: 15,
+  };
+
+  // const aiRes = await fetch("http://localhost:3000/api/openai", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(stats),
+  // });
+
+  // const res = await aiRes.json();
+
   return (
     <Card>
       <CardHeader>
@@ -37,9 +55,10 @@ export default async function Profile() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <CustomRadarChart />
+        <CustomRadarChart stats={stats} />
         <h3 className="text-xl font-bold mb-2">Who are you ?</h3>
         <p>
+          {/* {res.description} */}
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industrys standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
