@@ -45,42 +45,46 @@ export const ChoiceSelector = ({
   return (
     <form>
       <div className="space-y-2">
-        {choices.map(({ id, answer, count }) => (
-          <div key={id}>
-            <label htmlFor={`choice-${id}`}>
-              <div
-                className={`relative flex justify-center items-center w-full text-left p-4 rounded-lg transition-colors ${cursor}
+        {choices.map(({ id, answer, count }) => {
+          const isAnswered = choiceId === id;
+          return (
+            <div key={id}>
+              <label htmlFor={`choice-${id}`}>
+                <div
+                  className={`relative flex justify-center items-center w-full text-left p-4 rounded-lg transition-colors ${cursor}
+                  ${isAnswered ? "border-b-4 border-black" : ""}
               ${
                 selectedChoice === id && !answered
                   ? "bg-black text-primary-foreground"
                   : "bg-secondary hover:bg-secondary/80"
               }`}
-              >
-                <input
-                  id={`choice-${id}`}
-                  type="radio"
-                  name="choice"
-                  value={id}
-                  className="sr-only"
-                  checked={selectedChoice === id}
-                  onChange={() => !answered && setSelectedChoice(id)}
-                />
-                <p className="mr-auto">{answer}</p>
-                {answered && (
-                  <>
-                    <p className="text-center whitespace-nowrap h-fit ml-8">
-                      {getChoicesPercentage(count, totalCount)}
-                    </p>
-                    <div
-                      className="absolute left-0 z-0 h-full bg-black opacity-20"
-                      style={{ width: `${(count / totalCount) * 100}%` }}
-                    />
-                  </>
-                )}
-              </div>
-            </label>
-          </div>
-        ))}
+                >
+                  <input
+                    id={`choice-${id}`}
+                    type="radio"
+                    name="choice"
+                    value={id}
+                    className="sr-only"
+                    checked={selectedChoice === id}
+                    onChange={() => !answered && setSelectedChoice(id)}
+                  />
+                  <p className="mr-auto">{answer}</p>
+                  {answered && (
+                    <>
+                      <p className="text-center whitespace-nowrap h-fit ml-8">
+                        {getChoicesPercentage(count, totalCount)}
+                      </p>
+                      <div
+                        className="absolute left-0 z-0 rounded-lg h-full bg-black opacity-20"
+                        style={{ width: `${(count / totalCount) * 100}%` }}
+                      />
+                    </>
+                  )}
+                </div>
+              </label>
+            </div>
+          );
+        })}
         <Button
           formAction={(e) => handleSubmit(e)}
           className="w-full mt-4"
