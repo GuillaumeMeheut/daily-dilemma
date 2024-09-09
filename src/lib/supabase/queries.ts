@@ -1,6 +1,16 @@
 import { cache } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 
+type Stats = {
+  openness: number;
+  conscientiousness: number;
+  extraversion: number;
+  agreeableness: number;
+  neuroticism: number;
+};
+
+type DilemmaAnswer = { id: number; choice_id: number };
+
 export const getUser = cache(async (supabase: SupabaseClient) => {
   const {
     data: { user },
@@ -21,6 +31,20 @@ export const getUserProfile = cache(
   }
 );
 
+export const getUserStatsById = cache(
+  async (supabase: SupabaseClient, userId: string): Promise<Stats | null> => {
+    const { data: userStats, error } = await supabase
+      .from("user_profiles")
+      .select(
+        "openness, conscientiousness, extraversion, agreeableness, neuroticism"
+      )
+      .eq("id", userId)
+      .single();
+
+    return userStats;
+  }
+);
+
 export const getUserResponses = cache(
   async (supabase: SupabaseClient, userId: string) => {
     const { data: userProfile, error } = await supabase
@@ -32,14 +56,12 @@ export const getUserResponses = cache(
   }
 );
 
-type DilemmaAnswer = { id: number; choice_id: number } | null;
-
 export const getDilemmaAnswer = cache(
   async (
     supabase: SupabaseClient,
     userId: string,
     dilemmaId: number
-  ): Promise<DilemmaAnswer> => {
+  ): Promise<DilemmaAnswer | null> => {
     const { data: dilemmaAnswer, error } = await supabase
       .from("user_responses")
       .select("id, choice_id")
@@ -52,26 +74,6 @@ export const getDilemmaAnswer = cache(
     }
 
     return dilemmaAnswer;
-  }
-);
-
-export const addDilemmaResponse = cache(
-  async (
-    supabase: SupabaseClient,
-    userId: string,
-    dilemmaId: number,
-    choiceId: number
-  ) => {
-    const { error } = await supabase.from("user_responses").insert([
-      {
-        user_id: userId,
-        dilemma_id: dilemmaId,
-        choice_id: choiceId,
-      },
-    ]);
-    if (error) {
-      console.log(error.message);
-    }
   }
 );
 
@@ -99,6 +101,51 @@ export const addDilemmaResponseAndIncreaseChoiceCount = cache(
   }
 );
 
+export const updateUserStats = cache(
+  async (supabase: SupabaseClient, userId: string, choiceId: number) => {
+    const [choiceStats, currentStats] = await Promise.all([
+      getChoiceStatsById(supabase, choiceId),
+      getUserStatsById(supabase, userId),
+    ]);
+
+    if (!choiceStats || !currentStats) {
+      console.error("Missing stats for update");
+      return;
+    }
+
+    // Explicitly typed keys of the Stats object
+    const statKeys: (keyof Stats)[] = [
+      "openness",
+      "conscientiousness",
+      "extraversion",
+      "agreeableness",
+      "neuroticism",
+    ];
+
+    const updatedStats = statKeys.reduce((acc, trait) => {
+      const newValue = (currentStats[trait] || 0) + (choiceStats[trait] || 0);
+      if (newValue !== currentStats[trait]) {
+        acc[trait] = newValue;
+      }
+      return acc;
+    }, {} as Partial<Stats>);
+
+    if (Object.keys(updatedStats).length === 0) {
+      console.log("No stats to update");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .update(updatedStats)
+      .eq("id", userId);
+
+    if (error) {
+      console.error("Error updating user stats:", error);
+    }
+  }
+);
+
 export const getDilemmaByDate = cache(
   async (supabase: SupabaseClient, date: string) => {
     const { data: dilemma, error } = await supabase
@@ -120,5 +167,19 @@ export const getChoices = cache(
       .order("id", { ascending: false });
 
     return choices;
+  }
+);
+
+export const getChoiceStatsById = cache(
+  async (supabase: SupabaseClient, choiceId: number): Promise<Stats | null> => {
+    const { data: choiceStats, error } = await supabase
+      .from("choices")
+      .select(
+        "openness, conscientiousness, extraversion, agreeableness, neuroticism"
+      )
+      .eq("id", choiceId)
+      .single();
+
+    return choiceStats;
   }
 );

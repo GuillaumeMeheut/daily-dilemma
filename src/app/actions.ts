@@ -2,7 +2,10 @@
 
 import {
   addDilemmaResponseAndIncreaseChoiceCount,
+  getChoiceStatsById,
   getDilemmaAnswer,
+  getUserStatsById,
+  updateUserStats,
 } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { getErrorRedirect, getStatusRedirect } from "@/lib/utils";
@@ -20,7 +23,7 @@ export const submitChoice = async (
     );
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const dilemmaAnswer = await getDilemmaAnswer(supabase, user.id, dilemmaId);
 
@@ -42,6 +45,8 @@ export const submitChoice = async (
     dilemmaId,
     choiceId
   );
+
+  await updateUserStats(supabase, user.id, choiceId);
 
   redirect(getStatusRedirect(`/`, "Success!", "Response submitted."));
 };
