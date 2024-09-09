@@ -45,7 +45,7 @@ export const ChoiceSelector = ({
   return (
     <form>
       <div className="space-y-2">
-        {choices.map(({ id, answer, psychological_profile, count }) => (
+        {choices.map(({ id, answer, count }) => (
           <div key={id}>
             <label htmlFor={`choice-${id}`}>
               <div
@@ -65,9 +65,7 @@ export const ChoiceSelector = ({
                   checked={selectedChoice === id}
                   onChange={() => !answered && setSelectedChoice(id)}
                 />
-                <p className="mr-auto">
-                  {answer} ({psychological_profile})
-                </p>
+                <p className="mr-auto">{answer}</p>
                 {answered && (
                   <>
                     <p className="text-center whitespace-nowrap h-fit ml-8">
