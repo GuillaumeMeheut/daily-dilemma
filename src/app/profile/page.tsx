@@ -1,5 +1,11 @@
 import CustomRadarChart from "@/components/RadarChart";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { fetchAIResponse } from "@/lib/api";
 import {
   getUser,
@@ -53,6 +59,8 @@ export default async function Profile() {
     description = await getUserDescription(supabase, user.id);
   }
 
+  const dilemmaBeforeNewDesc = 5 - (responses % 5);
+
   return (
     <Card>
       <CardHeader>
@@ -62,9 +70,17 @@ export default async function Profile() {
       </CardHeader>
       <CardContent>
         <CustomRadarChart stats={stats} />
-        <h3 className="text-xl font-bold mb-2">Who are you ?</h3>
+        <h3 className="text-xl font-bold mb-2">
+          Whats your dilemma answers tell about you ?
+        </h3>
         <p>{description}</p>
       </CardContent>
+      <CardFooter>
+        <p className="italic text-sm">
+          Answer {dilemmaBeforeNewDesc} more dilemma
+          {dilemmaBeforeNewDesc > 1 && "s"} to get a new description
+        </p>
+      </CardFooter>
     </Card>
   );
 }
