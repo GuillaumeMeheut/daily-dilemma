@@ -1,9 +1,13 @@
 import CustomRadarChart from "@/components/RadarChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { fetchAIResponse } from "@/lib/api";
 import {
   getUser,
-  getUserProfile,
-  getUserResponses,
+  getNumbersOfUserResponses,
+  getUserStatsById,
+  getLastDescriptionDilemmaCount,
+  updateUserDescription,
+  getUserDescription,
 } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,36 +20,38 @@ export default async function Profile() {
     return <p>You must be sign in</p>;
   }
 
-  const responses = await getUserResponses(supabase, user.id);
+  const responses = await getNumbersOfUserResponses(supabase, user.id);
 
-  // if (responses && responses?.length < 5) {
-  //   //TODO: Must return a preview but locked/blurred
-  //   return (
-  //     <p>
-  //       You need to answer {5 - responses.length} more dilemma to get access to
-  //       your psychological profile.
-  //     </p>
-  //   );
-  // }
-  const profile = await getUserProfile(supabase, user.id);
+  if (!responses) return;
+  if (responses && responses < 5) {
+    return (
+      <p>
+        You need to answer {5 - responses} more dilemma to get access to your
+        psychological profile.
+      </p>
+    );
+  }
+  const lastDescriptionDilemmaCount = await getLastDescriptionDilemmaCount(
+    supabase,
+    user.id
+  );
 
-  const stats = {
-    openness: 20,
-    conscientiousness: 8,
-    extraversion: -6,
-    agreeableness: 33,
-    neuroticism: 15,
-  };
+  if (lastDescriptionDilemmaCount === null) return;
 
-  // const aiRes = await fetch("http://localhost:3000/api/openai", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(stats),
-  // });
+  const stats = await getUserStatsById(supabase, user.id);
 
-  // const res = await aiRes.json();
+  if (!stats) return;
+
+  let description: string | null;
+
+  if (responses % 5 === 0 && responses > lastDescriptionDilemmaCount) {
+    const newDescription = await fetchAIResponse(stats, responses);
+    if (!newDescription) return;
+    await updateUserDescription(supabase, user.id, newDescription, responses);
+    description = newDescription;
+  } else {
+    description = await getUserDescription(supabase, user.id);
+  }
 
   return (
     <Card>
@@ -57,18 +63,7 @@ export default async function Profile() {
       <CardContent>
         <CustomRadarChart stats={stats} />
         <h3 className="text-xl font-bold mb-2">Who are you ?</h3>
-        <p>
-          {/* {res.description} */}
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industrys standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
-        </p>
+        <p>{description}</p>
       </CardContent>
     </Card>
   );

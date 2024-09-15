@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-type Stats = {
+export type Stats = {
   openness: number;
   conscientiousness: number;
   extraversion: number;
@@ -31,6 +31,18 @@ export const getUserProfile = cache(
   }
 );
 
+export const getLastDescriptionDilemmaCount = cache(
+  async (supabase: SupabaseClient, userId: string): Promise<number | null> => {
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .select("last_description_dilemma_count")
+      .eq("id", userId)
+      .single();
+
+    return data?.last_description_dilemma_count;
+  }
+);
+
 export const getUserStatsById = cache(
   async (supabase: SupabaseClient, userId: string): Promise<Stats | null> => {
     const { data: userStats, error } = await supabase
@@ -45,14 +57,14 @@ export const getUserStatsById = cache(
   }
 );
 
-export const getUserResponses = cache(
-  async (supabase: SupabaseClient, userId: string) => {
-    const { data: userProfile, error } = await supabase
+export const getNumbersOfUserResponses = cache(
+  async (supabase: SupabaseClient, userId: string): Promise<number | null> => {
+    const { count, error } = await supabase
       .from("user_responses")
-      .select()
+      .select("*", { count: "exact", head: true })
       .eq("user_id", userId);
 
-    return userProfile;
+    return count;
   }
 );
 
@@ -141,8 +153,41 @@ export const updateUserStats = cache(
       .eq("id", userId);
 
     if (error) {
-      console.error("Error updating user stats:", error);
+      console.error("Error updating user stats:", error.message);
     }
+  }
+);
+export const updateUserDescription = cache(
+  async (
+    supabase: SupabaseClient,
+    userId: string,
+    description: string,
+    currentDilemmaCount: number
+  ) => {
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({
+        description,
+        last_description_dilemma_count: currentDilemmaCount,
+      })
+      .eq("id", userId);
+
+    if (error) {
+      console.error("Error updating user description:", error.message);
+    }
+  }
+);
+
+export const getUserDescription = cache(
+  async (supabase: SupabaseClient, userId: string): Promise<string> => {
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .select("description")
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+    return data.description;
   }
 );
 

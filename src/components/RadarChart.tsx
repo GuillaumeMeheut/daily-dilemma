@@ -25,12 +25,11 @@ export default function CustomRadarChart({ stats }: CustomRadarProps) {
   const data = Object.keys(stats).map((key) => {
     const typedKey = key as keyof Stats;
     return {
-      trait: capitalizeFirstLetter(key) + key.slice(1),
+      trait: capitalizeFirstLetter(key),
       A: stats[typedKey],
       fullMark: 150,
     };
   });
-  console.log(data);
 
   return (
     <ResponsiveContainer width="100%" height={400}>

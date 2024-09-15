@@ -10,19 +10,23 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     const {
-      openness,
-      conscientiousness,
-      extraversion,
-      agreeableness,
-      neuroticism,
-    } = await request.json(); // Parse the JSON body from the request
+      stats: {
+        openness,
+        conscientiousness,
+        extraversion,
+        agreeableness,
+        neuroticism,
+      },
+      nbResponses,
+    } = await request.json();
 
     if (
       openness === undefined ||
       conscientiousness === undefined ||
       extraversion === undefined ||
       agreeableness === undefined ||
-      neuroticism === undefined
+      neuroticism === undefined ||
+      nbResponses === undefined
     ) {
       return new Response(
         JSON.stringify({ error: "Missing required personality traits." }),
@@ -35,29 +39,26 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `Based on the Big Five personality traits, I'll provide a set of values for Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism. Please create a fun,
-           concise psychological profile that includes both personality strengths and challenges. Keep the description casual, but include examples of how this person might act in everyday
-           situations or interactions. Return the response in JSON format with the key 'description'.`,
+          content: `You are an AI focused on psychological aspects of personality based on the Big Five traits: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism. I'll provide values for each trait, ranging from -3 to +3, which represent how much this person leans into each trait. The values are calculated from answers to a series of dilemmas. 
+    
+          Based on the number of dilemmas answered and the trait values, create a concise, fun, and casual psychological profile. Include both personality strengths and challenges, and give examples of how this person might behave in everyday situations or social interactions. Keep the tone light, direct, and engaging. Aim for around 4-5 sentences.`,
         },
         {
           role: "user",
-          content: `Openness ${openness}, Conscientiousness ${conscientiousness}, Extraversion ${extraversion}, Agreeableness ${agreeableness}, Neuroticism ${neuroticism}`,
+          content: `Dilemmas answered: ${nbResponses}, Openness: ${openness}, Conscientiousness: ${conscientiousness}, Extraversion: ${extraversion}, Agreeableness: ${agreeableness}, Neuroticism: ${neuroticism}`,
         },
       ],
-      max_tokens: 200,
-      temperature: 0.8,
+      max_tokens: 250,
+      temperature: 0.6,
     });
 
     const responseContent = completion.choices?.[0]?.message?.content;
-    console.log(responseContent);
 
     if (!responseContent) {
       throw new Error("No response content received from OpenAI.");
     }
 
-    const jsonResponse = JSON.parse(responseContent);
-
-    return new Response(JSON.stringify(jsonResponse), {
+    return new Response(JSON.stringify({ description: responseContent }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {

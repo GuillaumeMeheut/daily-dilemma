@@ -15,6 +15,10 @@ export const Navbar = async () => {
       <Link href="/" className="mr-auto">
         <Button variant="link">Today&apos;s Dilemma</Button>
       </Link>
+      <Link href="/profile">
+        <Button variant="link">My profile</Button>
+      </Link>
+
       <Navlinks user={user} />
     </nav>
   );
